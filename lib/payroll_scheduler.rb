@@ -1,3 +1,4 @@
+#/usr/bin/ruby
 require "date"
 require_relative "../lib/date_parser"
 class PayrollScheduler
@@ -5,9 +6,21 @@ class PayrollScheduler
   include DateParser
   attr_accessor :year, :date
 
-  def initialize(year, date)
-    @year = year
-    @date = date
+  def initialize
+    puts "What year?"
+    @year = gets.chomp.to_i
+    puts "Enter date"
+    @date = gets.chomp.to_i
+    puts "Enter Starting Date:"
+    @starting_date = gets.chomp
+
+    impodr)
+
+_'sssaSSSP'                                 Q11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111BV           FX
+
+
+
+
   end
 
   def find_dates_for_year

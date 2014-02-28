@@ -28,9 +28,9 @@ module DateParser
     def find_preceding_friday(date)
       case date.wday
       when 0
-        date = (date - 2)
+        date = ((date - 2).month != date.month) ? (date + 1) : (date - 2)
       when 6
-        date = (date - 1)
+        date = ((date - 1).month != date.month) ? (date + 2) : (date - 1)
       end
       format_date(date)
     end
@@ -42,6 +42,27 @@ module DateParser
       else
         date_object = Date.new(year, month, date)
       end
+    end
+
+    def find_dates_frequency(frequency, start_date)
+      start_date = start_date == "" ? "01/01/2014" : start_date
+      original_start_date = Date.strptime(start_date, "%m/%d/%Y")
+      date_array = [original_start_date]
+      num = extract_number_in_frequency_phrase(frequency)
+      start_date = original_start_date
+      begin
+        next_date = (start_date + num)
+        date_array << next_date
+        start_date = next_date
+      end while (original_start_date.year == next_date.year)
+      date_array = date_array.reject{|d| d if d.year != original_start_date.year}
+    end
+
+    private
+
+    def extract_number_in_frequency_phrase(frequency)
+      number_of_weeks = frequency.split(" ")[0].to_i
+      days_for_num_weeks = (7*number_of_weeks)
     end
 
   end

@@ -10,10 +10,6 @@ describe PayrollScheduler do
       @payroll_scheduler.find_dates_for_year.is_a?(Array)
     end
 
-    # it "must return an array of size 12" do
-    #   @payroll_scheduler.find_dates_for_year.size.should == 12
-    # end
-
   end
 
   context "find_payouts_starting_on_date" do
@@ -40,21 +36,6 @@ describe PayrollScheduler do
       @payroll_scheduler.stub(:gets).and_return("02/01/2013\n", "2 weeks\n")
       @payroll_scheduler.find_payouts_for_frequency.should == "Not a valid frequency. Please choose from one of the following: #{VALID_FREQUENCIES.join(', ')}"
     end
-
-    # test method with different start dates and frequencies
-    # it "must return an array of size 24 with given start date and frequency provided" do
-    #   @payroll_scheduler.find_payouts_for_frequency.size.should == 24
-    # end
-
-    # it "must return an array of size 9 with given start date and frequency provided" do
-    #   @payroll_scheduler.stub(:gets).and_return("05/13/2013\n", "4 week\n")
-    #   @payroll_scheduler.find_payouts_for_frequency.size.should == 9
-    # end
-
-    # it "must return an array of size 4 with given start date and frequency provided" do
-    #   @payroll_scheduler.stub(:gets).and_return("01/13/2013\n", "13 week\n")
-    #   @payroll_scheduler.find_payouts_for_frequency.size.should == 4
-    # end
 
   end
 

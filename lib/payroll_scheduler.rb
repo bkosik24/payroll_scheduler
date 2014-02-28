@@ -16,6 +16,7 @@ class PayrollScheduler
     @year = gets.chomp.to_i
     puts "Enter date"
     @date = gets.chomp.to_i
+
     # put all 12 months with given date in array
     dates = DateParser.grab_payday_for_year(@year, @date)
     output_dates(dates)
@@ -58,7 +59,7 @@ class PayrollScheduler
     VALID_FREQUENCIES.include?(@frequency) ? true : false
   end
 
-  private
+private
 
   def output_dates(dates)
     dates.each_with_index do |date, index|
@@ -66,6 +67,5 @@ class PayrollScheduler
     end
     puts dates
   end
-
 
 end

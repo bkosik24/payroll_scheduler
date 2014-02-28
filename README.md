@@ -14,13 +14,10 @@ Payroll Scheduler App
 
 #### Testing the different scenarios
 * **Yearly on a specific date**
----
-* payroll.find_dates_for_year (The system will prompt you to enter in a few values)
+⋅⋅* payroll.find_dates_for_year (The system will prompt you to enter in a few values)
 
 * **Payroll on a given start date**
----
-* payroll.find_payouts_starting_on_date (The system will ask you to enter a start date)
+⋅⋅* payroll.find_payouts_starting_on_date (The system will ask you to enter a start date)
 
 * **Payroll on a given start date with a frequency**
----
-* payroll.find_payouts_for_frequency (The system will ask for a start date & frequency)
+⋅⋅* payroll.find_payouts_for_frequency (The system will ask for a start date & frequency)

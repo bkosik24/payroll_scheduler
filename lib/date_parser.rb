@@ -5,7 +5,7 @@ module DateParser
 
     def find_correct_date(date)
       check_date_is_weekend(date) ?
-      find_preceding_friday(date) :
+      find_next_valid_date(date) :
       format_date(date)
     end
 
@@ -25,7 +25,10 @@ module DateParser
       date = date.strftime("%A, %B %-d, %Y")
     end
 
-    def find_preceding_friday(date)
+    def find_next_valid_date(date)
+      # We ultimately want the preceding Friday but if that preceding Friday is
+      # in the previous month, we want to find the next valid date after the
+      # given date
       case date.wday
       when 0
         date = ((date - 2).month != date.month) ? (date + 1) : (date - 2)
@@ -58,11 +61,22 @@ module DateParser
       date_array = date_array.reject{|d| d if d.year != original_start_date.year}
     end
 
+    def find_paydates_for_given_start_date(start_date)
+      date_array = [start_date]
+      original_start_date = start_date
+      begin
+        next_month_date = (start_date >> 1)
+        date_array << next_month_date
+        start_date = next_month_date
+      end while (original_start_date.year == start_date.year)
+      date_array = date_array.reject{|d| d if d.year != original_start_date.year}
+    end
+
     private
 
     def extract_number_in_frequency_phrase(frequency)
       number_of_weeks = frequency.split(" ")[0].to_i
-      days_for_num_weeks = (7*number_of_weeks)
+      (7 * number_of_weeks)
     end
 
   end

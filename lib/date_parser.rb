@@ -1,18 +1,17 @@
-# require "date"
 module DateParser
 
   class << self
 
-    def find_correct_date(date)
+    def find_correct_date(date, public_holidays)
       check_date_is_weekend(date) ?
       find_next_valid_date(date) :
       format_date(date)
     end
 
-    def grab_payday_for_year(year, date)
+    def grab_payday_for_year(year, date, public_holidays)
       date_array = []
       (1..12).each do |month|
-        date_array << valid_weekday(year, month, date)
+        date_array << valid_weekday(year, month, date, public_holidays)
       end
       date_array
     end
@@ -38,10 +37,10 @@ module DateParser
       format_date(date)
     end
 
-    def valid_weekday(year, month, date)
+    def valid_weekday(year, month, date, public_holidays)
       if !Date.valid_date?(year, month, date)
         last_day_of_month = Date.civil(year, month, -1)
-        date_object = Date.parse(find_correct_date(last_day_of_month))
+        date_object = Date.parse(find_correct_date(last_day_of_month, public_holidays))
       else
         date_object = Date.new(year, month, date)
       end
@@ -49,7 +48,7 @@ module DateParser
 
     def find_dates_for_date_and_frequency(frequency, start_date)
       start_date = start_date == "" ? "01/01/2014" : start_date
-      start_date = Date.strptime(start_date, "%m/%d/%Y")
+      start_date = get_date_from_string(start_date, "%m/%d/%Y")
       # if no frequency, then we will assume it's monthly
       if frequency == ""
         find_paydates_for_given_start_date(start_date)
@@ -86,6 +85,10 @@ module DateParser
     def extract_number_in_frequency_phrase(frequency)
       number_of_weeks = frequency.split(" ")[0].to_i
       (7 * number_of_weeks)
+    end
+
+    def get_date_from_string(date, format)
+      date_object = Date.strptime(date, format)
     end
 
   end

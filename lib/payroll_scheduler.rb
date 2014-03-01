@@ -1,7 +1,11 @@
+require "date_parser"
+require "json_parser"
 class PayrollScheduler
 
   include DateParser
-  attr_accessor :output
+  include JsonParser
+
+  attr_accessor :output, :public_holidays
 
   VALID_FREQUENCIES = ["1 week", "2 week", "4 week", "13 week"]
 
@@ -18,10 +22,11 @@ class PayrollScheduler
     @year = gets.chomp.to_i
     puts "Enter date"
     @date = gets.chomp.to_i
+    ask_for_json_holiday_file
 
     # put all 12 months with given date in array
-    dates = DateParser.grab_payday_for_year(@year, @date)
-    output_dates(dates)
+    dates = DateParser.grab_payday_for_year(@year, @date, @public_holidays)
+    output_dates(dates, @public_holidays)
   end
 
   def find_payroll_dates_for_start_and_frequency
@@ -29,12 +34,13 @@ class PayrollScheduler
     @starting_date = gets.chomp
     puts "Enter one of the following frequencies:\n#{VALID_FREQUENCIES.join(', ')}:"
     @frequency = gets.chomp
+    ask_for_json_holiday_file
 
     if @frequency != "" && !is_a_valid_frequency?
       return "Not a valid frequency. Please choose from one of the following: #{VALID_FREQUENCIES.join(', ')}"
     else
       dates = DateParser.find_dates_for_date_and_frequency(@frequency, @starting_date)
-      output_dates(dates)
+      output_dates(dates, @public_holidays)
     end
   end
 
@@ -44,11 +50,16 @@ class PayrollScheduler
 
 private
 
-  def output_dates(dates)
+  def output_dates(dates, public_holidays)
     dates.each_with_index do |date, index|
-      dates[index] = DateParser.find_correct_date(date)
+      dates[index] = DateParser.find_correct_date(date, public_holidays)
     end
     puts dates
+  end
+
+  def ask_for_json_holiday_file
+    puts "Upload public holiday JSON file"
+    @public_holidays = JsonParser::Holidays.new(gets.chomp).retrieve_dates rescue ""
   end
 
 end

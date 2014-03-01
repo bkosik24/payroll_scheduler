@@ -4,7 +4,7 @@ Payroll Scheduler App
 #### Setup
 
 1. Clone Repo onto your local machine (git clone git@github.com:bkosik24/payroll_scheduler.git)
-2. cd into that directory cd payroll_scheduler/
+2. cd into the **payroll_scheduler** directory
 3. Run bundle install (install bundler gem first if you don't already have it)
 
 

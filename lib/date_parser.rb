@@ -47,12 +47,21 @@ module DateParser
       end
     end
 
-    def find_dates_frequency(frequency, start_date)
+    def find_dates_for_date_and_frequency(frequency, start_date)
       start_date = start_date == "" ? "01/01/2014" : start_date
-      original_start_date = Date.strptime(start_date, "%m/%d/%Y")
-      date_array = [original_start_date]
+      start_date = Date.strptime(start_date, "%m/%d/%Y")
+      # if no frequency, then we will assume it's monthly
+      if frequency == ""
+        find_paydates_for_given_start_date(start_date)
+      else
+        find_dates_for_given_frequency(start_date, frequency)
+      end
+    end
+
+    def find_dates_for_given_frequency(start_date, frequency)
+      date_array = [start_date]
+      original_start_date = start_date
       num = extract_number_in_frequency_phrase(frequency)
-      start_date = original_start_date
       begin
         next_date = (start_date + num)
         date_array << next_date

@@ -105,4 +105,13 @@ describe DateParser do
     end
   end
 
+  context "#validate_date_string(date, public_holidays)" do
+
+    it "should validate and turn string into date object" do
+      date_string = "02/22/2011"
+      DateParser.validate_date_string(date_string, public_holidays).should == Date.new(2011, 02, 22)
+    end
+
+  end
+
 end

@@ -40,7 +40,7 @@ module DateParser
     def valid_weekday(year, month, date, public_holidays)
       if !Date.valid_date?(year, month, date)
         last_day_of_month = Date.civil(year, month, -1)
-        date_object = Date.parse(find_correct_date(last_day_of_month, public_holidays))
+        date_object = Date.parse(find_correct_date(last_day_of_month))
       else
         date_object = Date.new(year, month, date)
         if date_is_a_holiday(public_holidays, date_object)
@@ -50,13 +50,9 @@ module DateParser
       end
     end
 
-    def validate_next_day(date, public_holidays)
-      valid_weekday(date.year, date.month, date.day, public_holidays)
-    end
-
     def find_dates_for_date_and_frequency(frequency, start_date, public_holidays)
       start_date = start_date == "" ? "01/01/2014" : start_date
-      start_date = get_date_from_string(start_date, "%m/%d/%Y")
+      start_date = validate_date_string(start_date, public_holidays)
       # if no frequency, then we will assume it's monthly
       if frequency == ""
         find_paydates_for_given_start_date(start_date, public_holidays)
@@ -70,9 +66,10 @@ module DateParser
       original_start_date = start_date
       num = extract_number_in_frequency_phrase(frequency)
       begin
-        next_date = validate_next_day((start_date + num), public_holidays)
+        next_date_in_frequency = (start_date + num)
+        next_date = validate_next_day(next_date_in_frequency, public_holidays)
         date_array << next_date
-        start_date = next_date
+        start_date = next_date_in_frequency
       end while (original_start_date.year == next_date.year)
       date_array = date_array.reject{|d| d if d.year != original_start_date.year}
     end
@@ -81,11 +78,17 @@ module DateParser
       date_array = [start_date]
       original_start_date = start_date
       begin
-        next_month_date = validate_next_day((start_date >> 1), public_holidays)
-        date_array << next_month_date
-        start_date = next_month_date
+        next_months_date = (start_date >> 1)
+        next_date = validate_next_day(next_months_date, public_holidays)
+        date_array << next_date
+        start_date = next_months_date
       end while (original_start_date.year == start_date.year)
       date_array = date_array.reject{|d| d if d.year != original_start_date.year}
+    end
+
+    def validate_date_string(date, public_holidays)
+      separated_date = date.split("/").map(&:to_i)
+      valid_weekday(separated_date[2], separated_date[0], separated_date[1], public_holidays)
     end
 
 private
@@ -102,6 +105,11 @@ private
     def get_date_from_string(date, format)
       Date.strptime(date, format)
     end
+
+    def validate_next_day(date, public_holidays)
+      valid_weekday(date.year, date.month, date.day, public_holidays)
+    end
+
 
   end
 end

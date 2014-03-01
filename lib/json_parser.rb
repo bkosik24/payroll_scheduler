@@ -21,7 +21,7 @@ module JsonParser
         end
         holiday_array
       rescue JSON::ParserError
-        return "Not a valid JSON file"
+        raise "Not a valid JSON file"
       end
     end
 

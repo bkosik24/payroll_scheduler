@@ -26,7 +26,7 @@ class PayrollScheduler
 
     # put all 12 months with given date in array
     dates = DateParser.grab_payday_for_year(@year, @date, @public_holidays)
-    output_dates(dates, @public_holidays)
+    output_dates(dates)
   end
 
   def find_payroll_dates_for_start_and_frequency
@@ -39,8 +39,8 @@ class PayrollScheduler
     if @frequency != "" && !is_a_valid_frequency?
       return "Not a valid frequency. Please choose from one of the following: #{VALID_FREQUENCIES.join(', ')}"
     else
-      dates = DateParser.find_dates_for_date_and_frequency(@frequency, @starting_date)
-      output_dates(dates, @public_holidays)
+      dates = DateParser.find_dates_for_date_and_frequency(@frequency, @starting_date, @public_holidays)
+      output_dates(dates)
     end
   end
 
@@ -50,16 +50,16 @@ class PayrollScheduler
 
 private
 
-  def output_dates(dates, public_holidays)
+  def output_dates(dates)
     dates.each_with_index do |date, index|
-      dates[index] = DateParser.find_correct_date(date, public_holidays)
+      dates[index] = DateParser.find_correct_date(date)
     end
     puts dates
   end
 
   def ask_for_json_holiday_file
     puts "Upload public holiday JSON file"
-    @public_holidays = JsonParser::Holidays.new(gets.chomp).retrieve_dates rescue ""
+    @public_holidays = JsonParser::Holidays.new(gets.chomp).retrieve_dates rescue nil
   end
 
 end

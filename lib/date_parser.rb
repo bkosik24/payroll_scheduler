@@ -2,7 +2,7 @@ module DateParser
 
   class << self
 
-    def find_correct_date(date, public_holidays)
+    def find_correct_date(date)
       check_date_is_weekend(date) ?
       find_next_valid_date(date) :
       format_date(date)
@@ -43,44 +43,56 @@ module DateParser
         date_object = Date.parse(find_correct_date(last_day_of_month, public_holidays))
       else
         date_object = Date.new(year, month, date)
+        if date_is_a_holiday(public_holidays, date_object)
+          date_object = (date_object - 1)
+        end
+        date_object
       end
     end
 
-    def find_dates_for_date_and_frequency(frequency, start_date)
+    def validate_next_day(date, public_holidays)
+      valid_weekday(date.year, date.month, date.day, public_holidays)
+    end
+
+    def find_dates_for_date_and_frequency(frequency, start_date, public_holidays)
       start_date = start_date == "" ? "01/01/2014" : start_date
       start_date = get_date_from_string(start_date, "%m/%d/%Y")
       # if no frequency, then we will assume it's monthly
       if frequency == ""
-        find_paydates_for_given_start_date(start_date)
+        find_paydates_for_given_start_date(start_date, public_holidays)
       else
-        find_dates_for_given_frequency(start_date, frequency)
+        find_dates_for_given_frequency(start_date, frequency, public_holidays)
       end
     end
 
-    def find_dates_for_given_frequency(start_date, frequency)
+    def find_dates_for_given_frequency(start_date, frequency, public_holidays)
       date_array = [start_date]
       original_start_date = start_date
       num = extract_number_in_frequency_phrase(frequency)
       begin
-        next_date = (start_date + num)
+        next_date = validate_next_day((start_date + num), public_holidays)
         date_array << next_date
         start_date = next_date
       end while (original_start_date.year == next_date.year)
       date_array = date_array.reject{|d| d if d.year != original_start_date.year}
     end
 
-    def find_paydates_for_given_start_date(start_date)
+    def find_paydates_for_given_start_date(start_date, public_holidays)
       date_array = [start_date]
       original_start_date = start_date
       begin
-        next_month_date = (start_date >> 1)
+        next_month_date = validate_next_day((start_date >> 1), public_holidays)
         date_array << next_month_date
         start_date = next_month_date
       end while (original_start_date.year == start_date.year)
       date_array = date_array.reject{|d| d if d.year != original_start_date.year}
     end
 
-    private
+private
+
+    def date_is_a_holiday(public_holidays, date)
+      (!public_holidays.nil? && public_holidays.include?(date)) ? true : false
+    end
 
     def extract_number_in_frequency_phrase(frequency)
       number_of_weeks = frequency.split(" ")[0].to_i
@@ -88,7 +100,7 @@ module DateParser
     end
 
     def get_date_from_string(date, format)
-      date_object = Date.strptime(date, format)
+      Date.strptime(date, format)
     end
 
   end

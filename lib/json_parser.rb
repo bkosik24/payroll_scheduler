@@ -6,7 +6,7 @@ module JsonParser
     attr_accessor :file
 
     def initialize(file)
-      @file = File.open(file)
+      @file = File.open(file.strip)
     end
 
     def retrieve_dates

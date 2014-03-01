@@ -18,10 +18,6 @@ describe PayrollScheduler do
       @payroll_scheduler.stub(:gets).and_return("02/01/2013\n", "2 week\n")
     end
 
-    it "must accept user inputs and return the dates in an array" do
-      @payroll_scheduler.find_payroll_dates_for_start_and_frequency.is_a?(Array)
-    end
-
     it "must return a message if a user enters in an incorrect frequency" do
       @payroll_scheduler.stub(:gets).and_return("02/01/2013\n", "2 weeks\n")
       @payroll_scheduler.find_payroll_dates_for_start_and_frequency.should == "Not a valid frequency. Please choose from one of the following: #{VALID_FREQUENCIES.join(', ')}"

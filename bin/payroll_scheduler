@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "date"
-require "date_parser"
+require "pry"
 require "payroll_scheduler"
 
 payroll_scheduler = PayrollScheduler.new
-
 payroll_scheduler.choose_payroll_output
+
 if payroll_scheduler.output == "1"
   payroll_scheduler.find_dates_for_year
 elsif payroll_scheduler.output == "2"

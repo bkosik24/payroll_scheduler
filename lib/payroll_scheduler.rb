@@ -1,5 +1,3 @@
-require "date_parser"
-require "json_parser"
 class PayrollScheduler
 
   include DateParser

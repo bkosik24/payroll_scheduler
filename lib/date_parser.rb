@@ -87,7 +87,7 @@ module DateParser
     end
 
     def validate_date_string(date, public_holidays)
-      separated_date = date.split("/").map(&:to_i)
+      separated_date = date.split(/[^a-zA-Z0-9]/).map(&:to_i)
       valid_weekday(separated_date[2], separated_date[0], separated_date[1], public_holidays)
     end
 

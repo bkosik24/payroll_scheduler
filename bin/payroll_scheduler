@@ -13,4 +13,6 @@ if payroll_scheduler.output == "1"
   payroll_scheduler.find_dates_for_year
 elsif payroll_scheduler.output == "2"
   payroll_scheduler.find_payroll_dates_for_start_and_frequency
+else
+  puts "Invalid option. Run the bin/payroll_scheduler command again."
 end

@@ -19,3 +19,7 @@ Payroll Scheduler App
   1. First enter a day of the year in the MM/DD/YYYY format, enter a frequency based on the options provided, then either drag in or type in the path of the JSON file of public holidays.
 
 *Notes:* The starting date, frequency and public holiday JSON file is an optional parameter.
+
+#### Running Tests
+
+1. Make sure you are in the payroll_scheduler directory and run **rspec spec/**
